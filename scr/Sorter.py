@@ -42,6 +42,42 @@ class mergeSort(Sorter):
         sorted_list.extend(left[i:])
         sorted_list.extend(right[j:])
         return sorted_list
+        
+class heapSort(Sorter):
+    def __init__(self):
+        super().__init__()  # Call parent class constructor
+        self.comparison = 0
+
+    def heapify(self, arr, n, i):
+        self.comparison += 1
+        biggest = i  # Initialize biggest value as root
+        left = 2 * i + 1  # Left child
+        right = 2 * i + 2  # Right child
+
+        # Check left child exists and is bigger than root
+        if left < n and arr[left] > arr[biggest]:
+            biggest = left
+
+        # Check  right child exists and is bigger than root
+        if right < n and arr[right] > arr[biggest]:
+            biggest = right
+
+        # If biggest is not root, swap and heapify subtree
+        if biggest != i:
+            arr[i], arr[biggest] = arr[biggest], arr[i]
+            self.heapify(arr, n, biggest)
+
+    def heap_sort(self,arr):
+        n = len(arr)
+        # Build max heap
+        for i in range(n // 2 - 1, -1, -1):
+            self.heapify(arr, n, i)
+        # Extract elements 1 by 1
+        for i in range(n - 1, 0, -1):
+            arr[i], arr[0] = arr[0], arr[i]  # Move current root to end
+            self.heapify(arr, i, 0)  # Heapify the reduced heap
+        return arr
+        
 if __name__ == "__main__":
     #random test stuff/example can delete if you want
     test = Sorter()
@@ -61,3 +97,14 @@ if __name__ == "__main__":
     sorted = sort.merge_sort(test.unsortArray)
     print(f"Sorted array:   {sorted}")
     sort.getComparison()
+    #test heap
+    heap = heapSort()
+    print(f"\nOriginal array: {test_array}")
+    sorted_heap = heap.heap_sort(test_array.copy())
+    print(f"Sorted array:   {sorted_heap}")
+    heap.getComparison()
+    heap.resetComparison()
+    print(f"\nOriginal array: {heap.unsortArray}")
+    Heapsort = heap.heap_sort(test.unsortArray)
+    print(f"Sorted array:   {Heapsort}")
+    heap.getComparison()
