@@ -77,7 +77,41 @@ class heapSort(Sorter):
             arr[i], arr[0] = arr[0], arr[i]  # Move current root to end
             self.heapify(arr, i, 0)  # Heapify the reduced heap
         return arr
+
+class shakerSort(Sorter):
+    def __init__(self):
+        super().__init__() # call parent constructor
+        self.comparison = 0 # initializes comparison counter to 0
+
+    def shaker_sort(self, arr):
+        n = len(arr)
+        start = 0
+        end = n - 1
+        while(swapped == true)
+            #left to right bubbling sort (moves largest element to the right)
+            swapped = False
+            for i in range(start, end):
+                self.comparison += 1
+                if(arr[i] > arr[i + 1]):
+                    arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                    swapped = True
+            # checks if no swaps were performed then array is sorted           
+            if(swapped == False):
+                break
+            swapped = False
+            
+            end -= 1
+            # right to left bubbling sort (moves smallest element to the left)
+            for i in range(end -1, start - 1, -1):
+                self.comparison += 1
+                if(arr[i] > arr[i + 1]):
+                    arr[i], arr[i+1], arr[i]
+                    swapped = True
+            start += 1
         
+        return arr
+
+                
 if __name__ == "__main__":
     #random test stuff/example can delete if you want
     test = Sorter()
@@ -108,3 +142,17 @@ if __name__ == "__main__":
     Heapsort = heap.heap_sort(test.unsortArray)
     print(f"Sorted array:   {Heapsort}")
     heap.getComparison()
+    #test shaker sort
+    shaker = shaker()
+    print(f"\nOriginal array: {test_array}")
+    sorted_shaker = shaker.shaker_sort(test_array.copy())
+    print(f"Sorted array:   {sorted_shaker}")
+    shaker.getComparison()
+    #test shaker sort worst case
+    backwards_array = list(range(20, 0, -1))
+    print("\n *** Shaker Sort Worst Case Test ***")
+    print(f"\nOriginal array: {backwards_array}")
+    shaker = shakerSort()
+    backwards_sorted = shaker.shaker_sort(backwards_array.copu())
+    print(f"Sorted array: {backwards_sorted}")
+    shaker.getComparison()
