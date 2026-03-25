@@ -1,158 +1,235 @@
+"""
+Team #5
+
+Team Members
+- Steven Benjamin
+- Alex Gonzalez
+- Carlos Recinos
+
+CS-2430-502
+Project 2: Algorithm Performance
+"""
+
 from SortResults import Sort
+
+
 class Sorter(Sort):
-    #returns comparisons
-    def getComparison(self):
-        return print("Comparison value is " + str(self.comparison))
-    #reset to 0
-    def resetComparison(self):
-        self.comparison = 0
-        return print("Comparison has been set to " + str(self.comparison))
+    """Base class that all sorting algorithms inherit from.
+    Provides comparison getter and reset helpers."""
 
-class mergeSort(Sorter):
+    def get_comparison(self):
+        #return the current comparison count
+        return self.comparison
+
+    def reset_comparison(self):
+        #set the comparison counter back to zero
+        self.comparison = 0
+
+
+# MERGE SORT
+class MergeSort(Sorter):
     def __init__(self):
-        super().__init__()  # Call parent class constructor
-        self.comparison = 0
+        super().__init__()
+        self.AlgorithmName = "MergeSort"
 
-    def merge_sort(self, arr):
+    def sort(self, arr):
+        #public entry point, takes a list, returns sorted copy
+        self.reset_comparison()
+        result = self._merge_sort(list(arr))
+        return result
+
+    def _merge_sort(self, arr):
         #base case
         if len(arr) <= 1:
             return arr
-        #split and call in merge function until base case happens
+        #split and recurse until base case
         mid = len(arr) // 2
-        left_half = self.merge_sort(arr[:mid])
-        right_half = self.merge_sort(arr[mid:])
+        left_half = self._merge_sort(arr[:mid])
+        right_half = self._merge_sort(arr[mid:])
+        return self._merge(left_half, right_half)
 
-        return self.merge(left_half, right_half)
-
-    def merge(self, left, right):
-        #Merge two sorted arrays
-        sorted_list = []
-        i = j = 0
-        #while loop to combine
+    def _merge(self, left, right):
+        #merge two sorted lists into one sorted list
+        #each time we compare left[i] vs right[j] that is one element comparison
+        merged = []
+        i = 0
+        j = 0
         while i < len(left) and j < len(right):
+            #element-to-element comparison
             self.comparison += 1
-            ##if left is less than right then left first else put right
-            if left[i] < right[j]:
-                sorted_list.append(left[i])
+            if left[i] <= right[j]:
+                merged.append(left[i])
                 i += 1
             else:
-                sorted_list.append(right[j])
+                merged.append(right[j])
                 j += 1
+        #append remaining elements, no comparisons needed here
+        merged.extend(left[i:])
+        merged.extend(right[j:])
+        return merged
 
-        sorted_list.extend(left[i:])
-        sorted_list.extend(right[j:])
-        return sorted_list
-        
-class heapSort(Sorter):
+
+# QUICK SORT
+class QuickSort(Sorter):
     def __init__(self):
-        super().__init__()  # Call parent class constructor
-        self.comparison = 0
+        super().__init__()
+        self.AlgorithmName = "QuickSort"
 
-    def heapify(self, arr, n, i):
-        self.comparison += 1
-        biggest = i  # Initialize biggest value as root
-        left = 2 * i + 1  # Left child
-        right = 2 * i + 2  # Right child
+    def sort(self, arr):
+        #public entry point, takes a list, returns sorted copy
+        self.reset_comparison()
+        arr_copy = list(arr)
+        self._quick_sort(arr_copy, 0, len(arr_copy) - 1)
+        return arr_copy
 
-        # Check left child exists and is bigger than root
-        if left < n and arr[left] > arr[biggest]:
-            biggest = left
+    def _quick_sort(self, arr, low, high):
+        #recursively partition and sort subarrays
+        if low < high:
+            pivot_index = self._partition(arr, low, high)
+            self._quick_sort(arr, low, pivot_index - 1)
+            self._quick_sort(arr, pivot_index + 1, high)
 
-        # Check  right child exists and is bigger than root
-        if right < n and arr[right] > arr[biggest]:
-            biggest = right
+    def _partition(self, arr, low, high):
+        #partition using the middle element as pivot
+        #only count element-to-element comparisons, not index checks
+        mid = (low + high) // 2
+        pivot = arr[mid]
+        #move pivot to the end so it is out of the way
+        arr[mid], arr[high] = arr[high], arr[mid]
+        store_index = low
+        for j in range(low, high):
+            #element-to-element comparison
+            self.comparison += 1
+            if arr[j] <= pivot:
+                arr[store_index], arr[j] = arr[j], arr[store_index]
+                store_index += 1
+        #put the pivot in its final sorted position
+        arr[store_index], arr[high] = arr[high], arr[store_index]
+        return store_index
 
-        # If biggest is not root, swap and heapify subtree
-        if biggest != i:
-            arr[i], arr[biggest] = arr[biggest], arr[i]
-            self.heapify(arr, n, biggest)
 
-    def heap_sort(self,arr):
-        n = len(arr)
-        # Build max heap
-        for i in range(n // 2 - 1, -1, -1):
-            self.heapify(arr, n, i)
-        # Extract elements 1 by 1
-        for i in range(n - 1, 0, -1):
-            arr[i], arr[0] = arr[0], arr[i]  # Move current root to end
-            self.heapify(arr, i, 0)  # Heapify the reduced heap
-        return arr
-
-class shakerSort(Sorter):
+# SHAKER SORT (bidirectional bubble sort)
+class ShakerSort(Sorter):
     def __init__(self):
-        super().__init__() # call parent constructor
-        self.comparison = 0 # initializes comparison counter to 0
+        super().__init__()
+        self.AlgorithmName = "ShakerSort"
 
-    def shaker_sort(self, arr):
+    def sort(self, arr):
+        #public entry point, takes a list, returns sorted copy
+        self.reset_comparison()
+        arr_copy = list(arr)
+        self._shaker_sort(arr_copy)
+        return arr_copy
+
+    def _shaker_sort(self, arr):
+        #alternates between forward and backward bubble passes
         n = len(arr)
         start = 0
         end = n - 1
-        while(swapped == true)
-            #left to right bubbling sort (moves largest element to the right)
+        swapped = True
+
+        while swapped:
             swapped = False
+
+            #left to right pass: bubble largest unsorted to the right
             for i in range(start, end):
+                #element-to-element comparison
                 self.comparison += 1
-                if(arr[i] > arr[i + 1]):
+                if arr[i] > arr[i + 1]:
                     arr[i], arr[i + 1] = arr[i + 1], arr[i]
                     swapped = True
-            # checks if no swaps were performed then array is sorted           
-            if(swapped == False):
+
+            #if nothing moved then array is sorted
+            if not swapped:
                 break
+
             swapped = False
-            
             end -= 1
-            # right to left bubbling sort (moves smallest element to the left)
-            for i in range(end -1, start - 1, -1):
+
+            #right to left pass: bubble smallest unsorted to the left
+            for i in range(end - 1, start - 1, -1):
+                #element-to-element comparison
                 self.comparison += 1
-                if(arr[i] > arr[i + 1]):
-                    arr[i], arr[i+1], arr[i]
+                if arr[i] > arr[i + 1]:
+                    arr[i], arr[i + 1] = arr[i + 1], arr[i]
                     swapped = True
+
             start += 1
-        
+
         return arr
 
-                
+
+# HEAP SORT
+class HeapSort(Sorter):
+    def __init__(self):
+        super().__init__()
+        self.AlgorithmName = "HeapSort"
+
+    def sort(self, arr):
+        #public entry point, takes a list, returns sorted copy
+        self.reset_comparison()
+        arr_copy = list(arr)
+        self._heap_sort(arr_copy)
+        return arr_copy
+
+    def _heap_sort(self, arr):
+        #build a max-heap then repeatedly extract the max
+        n = len(arr)
+        #build the max-heap from the bottom up
+        for i in range(n // 2 - 1, -1, -1):
+            self._heapify(arr, n, i)
+        #extract elements one at a time
+        for i in range(n - 1, 0, -1):
+            arr[0], arr[i] = arr[i], arr[0]
+            self._heapify(arr, i, 0)
+        return arr
+
+    def _heapify(self, arr, heap_size, root):
+        #sift down element at root to restore max-heap property
+        #only element-to-element comparisons between array values are counted
+        largest = root
+        left = 2 * root + 1
+        right = 2 * root + 2
+
+        #compare left child with current largest
+        if left < heap_size:
+            self.comparison += 1
+            if arr[left] > arr[largest]:
+                largest = left
+
+        #compare right child with current largest
+        if right < heap_size:
+            self.comparison += 1
+            if arr[right] > arr[largest]:
+                largest = right
+
+        #if the root is not the largest, swap and recurse
+        if largest != root:
+            arr[root], arr[largest] = arr[largest], arr[root]
+            self._heapify(arr, heap_size, largest)
+
+
+# Example usage
 if __name__ == "__main__":
-    #random test stuff/example can delete if you want
-    test = Sorter()
-    test.getComparison()
-    #test output of array
-    print(test.unsortArray)
-    sort = mergeSort()
-    #test array or random values
     test_array = [64, 34, 25, 12, 22, 11, 90]
-    print(f"\nOriginal array: {test_array}")
-    sorted_array = sort.merge_sort(test_array.copy())
-    print(f"Sorted array:   {sorted_array}")
-    sort.getComparison()
-    #test array that is in class
-    sort.resetComparison()
-    print(f"\nOriginal array: {sort.unsortArray}")
-    sorted = sort.merge_sort(test.unsortArray)
-    print(f"Sorted array:   {sorted}")
-    sort.getComparison()
-    #test heap
-    heap = heapSort()
-    print(f"\nOriginal array: {test_array}")
-    sorted_heap = heap.heap_sort(test_array.copy())
-    print(f"Sorted array:   {sorted_heap}")
-    heap.getComparison()
-    heap.resetComparison()
-    print(f"\nOriginal array: {heap.unsortArray}")
-    Heapsort = heap.heap_sort(test.unsortArray)
-    print(f"Sorted array:   {Heapsort}")
-    heap.getComparison()
+
+    #test merge sort
+    ms = MergeSort()
+    print("Original:", test_array)
+    result = ms.sort(test_array)
+    print("MergeSort:", result, "| Comparisons:", ms.get_comparison())
+
+    #test quick sort
+    qs = QuickSort()
+    result = qs.sort(test_array)
+    print("QuickSort:", result, "| Comparisons:", qs.get_comparison())
+
     #test shaker sort
-    shaker = shaker()
-    print(f"\nOriginal array: {test_array}")
-    sorted_shaker = shaker.shaker_sort(test_array.copy())
-    print(f"Sorted array:   {sorted_shaker}")
-    shaker.getComparison()
-    #test shaker sort worst case
-    backwards_array = list(range(20, 0, -1))
-    print("\n *** Shaker Sort Worst Case Test ***")
-    print(f"\nOriginal array: {backwards_array}")
-    shaker = shakerSort()
-    backwards_sorted = shaker.shaker_sort(backwards_array.copu())
-    print(f"Sorted array: {backwards_sorted}")
-    shaker.getComparison()
+    sk = ShakerSort()
+    result = sk.sort(test_array)
+    print("ShakerSort:", result, "| Comparisons:", sk.get_comparison())
+
+    #test heap sort
+    hs = HeapSort()
+    result = hs.sort(test_array)
+    print("HeapSort:", result, "| Comparisons:", hs.get_comparison())
