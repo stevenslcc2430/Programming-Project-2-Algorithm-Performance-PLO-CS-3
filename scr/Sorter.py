@@ -8,6 +8,24 @@ Team Members
 
 CS-2430-502
 Project 2: Algorithm Performance
+
+Sources:
+- MergeSort: GeeksforGeeks "Merge Sort in Python"
+  https://www.geeksforgeeks.org/python-program-for-merge-sort/
+- MergeSort: Programiz "Merge Sort"
+  https://www.programiz.com/dsa/merge-sort
+- QuickSort: GeeksforGeeks "QuickSort - Python" (Lomuto partition)
+  https://www.geeksforgeeks.org/python-program-for-quicksort/
+- QuickSort: Programiz "Quicksort" (Lomuto partition)
+  https://www.programiz.com/dsa/quick-sort
+- ShakerSort: GeeksforGeeks "Python Program for Cocktail Sort"
+  https://www.geeksforgeeks.org/python-program-for-cocktail-sort/
+- ShakerSort: TutorialsPoint "Python Program for Cocktail Sort"
+  https://www.tutorialspoint.com/python-program-for-cocktail-sort
+- HeapSort: GeeksforGeeks "Heap Sort - Python"
+  https://www.geeksforgeeks.org/python-program-for-heap-sort/
+- HeapSort: Programiz "Heap Sort"
+  https://www.programiz.com/dsa/heap-sort
 """
 
 from SortResults import Sort
